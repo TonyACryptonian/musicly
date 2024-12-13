@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Avani's Dream Caravan</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #3494E6 0%, #EC6EAD 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: white;
+        }
+
+        .player-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            width: 400px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .album-cover {
+            width: 300px;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .album-cover:hover {
+            transform: scale(1.05);
+        }
+
+        .song-info {
+            margin-bottom: 20px;
+        }
+
+        .song-info h2 {
+            margin: 5px 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .song-info p {
+            margin: 5px 0;
+            color: rgba(255,255,255,0.7);
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .controls button {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .controls button:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .progress {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 5px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .progress-bar-fill {
+            width: 0;
+            height: 100%;
+            background: white;
+            transition: width 0.2s linear;
+        }
+
+        .time {
+            display: flex;
+            justify-content: space-between;
+            color: rgba(255,255,255,0.7);
+            font-size: 12px;
+        }
+
+        .lyrics {
+            max-height: 200px;
+            overflow-y: auto;
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: left;
+            line-height: 1.6;
+        }
+
+        .lyrics h3 {
+            margin-bottom: 10px;
+            color: rgba(255,255,255,0.8);
+        }
+    </style>
+</head>
+<body>
+    <div class="player-container">
+        <img src="file:///C:/Users/Aman%20Sharma/OneDrive/Desktop/mpv/musicover.jpeg" alt="Album Cover" class="album-cover">
+        
+        <div class="song-info">
+            <h2>Avani's Dream Caravan</h2>
+            <p>etsuqa</p>
+        </div>
+
+        <div class="progress">
+            <div class="progress-bar">
+                <div class="progress-bar-fill"></div>
+            </div>
+            <div class="time">
+                <span id="current-time">0:00</span>
+                <span id="total-time">0:00</span>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button id="prev-btn">⏮️</button>
+            <button id="play-pause-btn">▶️</button>
+            <button id="next-btn">⏭️</button>
+        </div>
+
+        <div class="lyrics">
+            <h3>Lyrics</h3>
+            <p>
+                [Verse] Avni with eyes like moonlight spark<br>
+                Told me tales of Vampires dark<br>
+                In her voice a spell so sweet<br>
+                Her dreams of worlds we'd someday meet<br><br>
+
+                [Verse 2] Avni loves the open road<br>
+                In a caravan our stories sowed<br>
+                Whispers of stars as we roam the skies<br>
+                With every mile her smile flies high<br><br>
+
+                [Chorus] Avani dreams in colors bright<br>
+                We'll travel far in endless night<br>
+                She speaks of places yet unseen<br>
+                In caravans we chase her dream<br><br>
+
+                [Verse 3] Pastas she craves in twilight's glow<br>
+                Her laughter like rivers' steady flow<br>
+                We'll feast on flavors rich and true<br>
+                In her world I'm lost anew<br><br>
+
+                [Verse 4] From India's heart her name does sing<br>
+                On highways where the freedom rings<br>
+                With every curve and every turn<br>
+                A love that will forever burn<br><br>
+
+                [Bridge] Oh Avni with your dreams so wild<br>
+                In every journey Heart beguiled<br>
+                Let's craft our stories as we go<br>
+                In caravans I'll let you know.
+            </p>
+        </div>
+
+        <audio id="audio-player">
+            <source src="file:///C:/Users/Aman%20Sharma/OneDrive/Desktop/mpv/Avani's%20Dream%20Caravan.mp3" type="audio/mpeg">
+        </audio>
+    </div>
+
+    <script>
+        (function() {
+            var audioPlayer = document.getElementById('audio-player');
+            var playPauseBtn = document.getElementById('play-pause-btn');
+            var progressBar = document.querySelector('.progress-bar');
+            var progressBarFill = document.querySelector('.progress-bar-fill');
+            var currentTimeEl = document.getElementById('current-time');
+            var totalTimeEl = document.getElementById('total-time');
+
+            function formatTime(timeInSeconds) {
+                var minutes = Math.floor(timeInSeconds / 60);
+                var seconds = Math.floor(timeInSeconds % 60);
+                return minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+            }
+
+            function togglePlayPause() {
+                if (audioPlayer.paused) {
+                    audioPlayer.play();
+                    playPauseBtn.textContent = '⏸️';
+                } else {
+                    audioPlayer.pause();
+                    playPauseBtn.textContent = '▶️';
+                }
+            }
+
+            function updateProgress() {
+                var percentage = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+                progressBarFill.style.width = percentage + '%';
+                currentTimeEl.textContent = formatTime(audioPlayer.currentTime);
+            }
+
+            function seek(event) {
+                var percent = event.offsetX / progressBar.offsetWidth;
+                audioPlayer.currentTime = percent * audioPlayer.duration;
+            }
+
+            playPauseBtn.addEventListener('click', togglePlayPause);
+            
+            audioPlayer.addEventListener('timeupdate', updateProgress);
+            
+            audioPlayer.addEventListener('loadedmetadata', function() {
+                totalTimeEl.textContent = formatTime(audioPlayer.duration);
+            });
+            
+            progressBar.addEventListener('click', seek);
+        })();
+    </script>
+</body>
+</html>
